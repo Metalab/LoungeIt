@@ -1,0 +1,16 @@
+{
+  "name": "loungeit",
+  "fullName": "Lounge It!",
+  "id": "loungeit.robert@haasenstall.at",
+  "description": "Send Page to ScreenInvader",
+  "author": "scenor",
+  "license": "GPLv2",
+  "version": "0.2",
+  "preferences": [{
+        "name": "ScreenInvader",
+        "title": "Hostname of the ScreenInvader",
+        "description": "Including http://, not including a trailing slash",
+        "type": "string",
+        "value": "http://127.0.0.1"
+    }]
+}
