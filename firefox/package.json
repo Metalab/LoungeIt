@@ -2,14 +2,14 @@
   "name": "loungeit",
   "fullName": "Lounge It!",
   "id": "loungeit.robert@haasenstall.at",
-  "description": "Send Page to ScreenInvader",
+  "description": "Send Content to ScreenInvader",
   "author": "scenor",
   "license": "GPLv2",
-  "version": "0.2",
+  "version": "0.3",
   "preferences": [{
         "name": "ScreenInvader",
-        "title": "Hostname of the ScreenInvader",
-        "description": "Including http://, not including a trailing slash",
+        "title": "Hostname",
+        "description": "Hostname of the Screeninvader",
         "type": "string",
         "value": "http://127.0.0.1"
     }]

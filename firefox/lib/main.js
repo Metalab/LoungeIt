@@ -2,17 +2,19 @@ var widgets = require("sdk/widget");
 var tabs = require("sdk/tabs");
 var simplePrefs = require("sdk/simple-prefs");
 var contextMenu = require("sdk/context-menu");
-var ico = simplePrefs.prefs.ScreenInvader + "/_inc/img/favicon.ico";
 var Request = require("sdk/request").Request;
 
 function loungeit(url) {
-	tabs.open({
-		url: simplePrefs.prefs.ScreenInvader + "/cgi-bin/show?" + url,
-		inBackground:true,
-		onLoad:function(tab){
-			tab.close();
-		}
-	});
+	if(url=="about:blank"||url=="about:newtab")
+		tabs.activeTab.url=screeninvader;
+	else
+		tabs.open({
+			url: screeninvader + "/cgi-bin/show?" + url,
+			inBackground:true,
+			onLoad:function(tab){
+				tab.close();
+			}
+		});
 };
 
 function create(icon){
@@ -63,11 +65,16 @@ function create(icon){
 	});
 }
 function refreshInvader() {
+	screeninvader = simplePrefs.prefs.ScreenInvader
+	if(screeninvader.substr(0,7) != "http://")
+		screeninvader="http://" + screeninvader
+	if(screeninvader.substr(screeninvader.length-1,1) == "/")
+		screeninvader=screeninvader.substr(0,screeninvader.length-1)
 	var iconRequest = Request({
-		url: simplePrefs.prefs.ScreenInvader + "/_inc/img/favicon.ico",
+		url: screeninvader + "/_inc/img/favicon.ico",
 		onComplete: function (response) {
 			if(response.status == 200)
-				create(simplePrefs.prefs.ScreenInvader + "/_inc/img/favicon.ico");
+				create(screeninvader + "/_inc/img/favicon.ico");
 		}
 	}).get()
 }
