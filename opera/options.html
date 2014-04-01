@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+   <head>
+    <title>ScreenInvader settings</title>
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <h1>ScreenInvader settings</h1> 
+
+      <form id="form">
+        <ul>
+          <li>
+            <label for="ip">ScreenInvader ip or url:</label>
+            <input type="text" name="ip" value="10.20.30.51" id="ip" />        
+            <label for="ip">No http:// and no trailing slash please.</label>
+            <p style="color:red;">
+              Please note that opera will require you to exchange the access origin in the config.xml to use a custom url / ip for the screeninvader.
+              This at least means that the ScreenInvader Plugin will not be able to access any ip/domain than the one you specified.
+            </p>
+          </li>
+          <li>
+            <label for="switch">Switch to Screeninvader tab when loading vid:</label>
+            <input type="checkbox" name="switch" id="switch" checked />
+          </li>
+        </ul>
+      </form>
+    </div>
+
+    <script>
+      var switchOrNot = document.getElementById( 'switch' ) || true,
+          ip = document.getElementById( 'ip' ) || "10.20.30.51",
+          form = document.getElementById( 'form' );
+
+      function checkIpForErrors(ip) {
+        ip = ip || '10.20.30.51';
+        
+        ip = ip.replace('http://', '');
+        console.log('ip.charAt(ip.length -1) = ' + ip.charAt(ip.length -1));
+
+        if(ip.charAt(ip.length - 1) === '/') {
+          ip = ip.substr(0, ip.length -1);
+        }
+
+        return ip;
+      }
+
+      widget.preferences.ip = checkIpForErrors(widget.preferences.ip) || '10.20.30.51';
+      widget.preferences.switch = widget.preferences.switch || false;
+
+      switchOrNot.addEventListener('click', function() {        
+        widget.preferences.switch = this.checked;
+      }, false );
+
+      ip.addEventListener('change', function() {
+        widget.preferences.ip = checkIpForErrors(this.value);
+      }, false );
+
+      form.addEventListener('submit', function() {
+        widget.preferences.ip = checkIpForErrors(ip.value);
+        widget.preferences.switch = switchOrNot.checked;
+      });
+
+      if ( widget.preferences.ip  ) {
+        var sw = widget.preferences.switch;
+
+        if (!sw || sw === 'false') {
+          sw = false;
+        } else {
+          sw = true;
+        }
+        switchOrNot.checked = sw;
+
+        ip.value = checkIpForErrors(widget.preferences.ip);
+      }
+
+    </script>
+  </body>
+</html>

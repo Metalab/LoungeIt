@@ -1,0 +1,13 @@
+<?xml version="0.23.5" encoding="utf-8"?>
+  <widget xmlns="http://www.w3.org/ns/widgets" id="https://github.com/manarius/ScreenInvader_BrowserExtensionPack" viewmodes="minimized" version="1.0">
+
+  <name>ScreenInvader Button</name>
+
+  <author href="http://jaeh.at" email="jascha@jaeh.at">Jascha Ehrenreich</author>
+  <description>Loads a video or image from a webpage to the screenInvader in the metalab.at lounge. Built for https://github.com/kallaballa/ScreenInvader</description>
+  <icon src="images/icon_64.png"/>
+
+  <feature name="opera:contextmenus"/>
+
+  <access origin="http://10.20.30.51/" subdomains="true"/>
+</widget>

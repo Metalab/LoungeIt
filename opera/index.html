@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>            
+      function httpGet(url) {
+        var xmlHttp = null;
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", url, false );
+        xmlHttp.send();
+      }
+
+      function handleClick(url) {
+        var urlTab = opera.extension.tabs.getSelected();
+        
+        if (typeof url !== 'string') {
+          url = urlTab.url;
+        }
+        
+        widget.preferences.ip = widget.preferences.ip || "10.20.30.51";
+        
+        if ( typeof widget.preferences.switch === 'undefined') {
+          widget.preferences.switch = true;
+        }
+
+        opera.extension.tabs.create({url: 'http://' + widget.preferences.ip + '/cgi-bin/show?' + url}).close();
+      
+        if (widget.preferences.switch && widget.preferences.switch === 'true') {
+      
+          // Get the last focused window
+          var win = opera.extension.windows.getLastFocused();
+
+          // Get all tabs in the window
+          var tabs = win.tabs.getAll();
+          var foundTab = false;
+
+          for (var key in tabs) {
+            if (tabs[key].url.indexOf(widget.preferences.ip) > -1) {
+              foundTab = tabs[key];
+              break;
+            }
+          }
+
+          if(!foundTab) {
+            opera.extension.tabs.create({url: 'http://' + widget.preferences.ip + '/'}).focus();
+          } else {
+            foundTab.focus();
+          }
+        }
+      }
+
+      // Check the Context Menu API is supported
+      if (opera.contexts.menu) {
+        var menu = opera.contexts.menu;
+        // Create a menu item properties object
+        var itemProps = {
+          title: 'Invade Screen',
+          contexts: ['link', 'image'],
+          icon: 'images/icon_18.png',
+          onclick: function(event) {
+            
+            var targetUrl = event.linkURL || event.srcURL || false;
+            
+            if (targetUrl) {
+              handleClick(targetUrl);
+            }
+          }
+        }
+
+        // Create a menu item with the specified properties
+        var item = menu.createItem(itemProps);
+        // Add the menu item to the context menu
+        menu.addItem(item);
+      }
+
+      // Specify the properties of the button before creating it.
+      var UIItemProperties = {
+        disabled: false,
+        title: "ScreenInvader Button",
+        icon: "images/icon_18.png",
+        badge: {
+          backgroundColor: '#0ff'
+        }
+      };
+
+      // Create the button and add it to the toolbar.
+      var button = opera.contexts.toolbar.createItem( UIItemProperties );  
+      opera.contexts.toolbar.addItem(button);
+
+      button.addEventListener('click', handleClick, false);
+      
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
