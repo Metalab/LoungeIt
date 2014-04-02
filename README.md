@@ -18,11 +18,9 @@ installation:
 
 to install it may be enough to leftclick the link for your browser below.
 
-opera: [screeninvader_opera.oex](https://github.com/manarius/ScreenInvader_BrowserExtensionPack/raw/master/screeninvader_opera.oex)
+firefox: [screeninvader_firefox.xpi](https://github.com/Metalab/LoungeIt/blob/master/loungeit.xpi?raw=true)
 
-firefox: [screeninvader_firefox.xpi](https://github.com/manarius/ScreenInvader_BrowserExtensionPack/raw/master/screeninvader_firefox.xpi)
-
-chromium-browser && goo-chrome: [screeninvader_chrome.crx](https://github.com/manarius/ScreenInvader_BrowserExtensionPack/raw/master/screeninvader_chrome.crx)
+srware iron, chromium, opera-blink && goo-chrome: [screeninvader_chrome.crx](https://github.com/Metalab/LoungeIt/blob/master/loungeit.crx?raw=true)
 
 if leftclicking doesnt work:
 rightclick the appropriate file and save it somewhere.
@@ -30,4 +28,4 @@ rightclick the appropriate file and save it somewhere.
 after downloading either doubleclick, or if that doesnt work rightclick the file, choose open with and select the browser you use to open it.
 an installation screen should pop up in the browser after that.
 
-iron, chromium, chrome: point your browser to chrome://chrome/extensions and then drag and drop the file into the browser to circumvent the "apps have to be loaded from the appstore" error.
+iron, chromium, opera-blink, chrome: point your browser to chrome://chrome/extensions and then drag and drop the file into the browser to circumvent the "apps have to be loaded from the appstore" error.
