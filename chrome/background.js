@@ -6,23 +6,33 @@ function httpGet(url) {
   if (url) {
     var xmlHttp = new XMLHttpRequest();
 
-    xmlHttp.open( "GET", url, true );
+    xmlHttp.open( 'GET', url, true );
 
     xmlHttp.send( null );
   }
 }
 
+function slackOrInvade (url, tab1) {
+	if ( booleanize( localStorage.redirectToSlackomatic ) ) {
+		console.log('testing');
+		openOrSwitchTab(localStorage.slackomatic_ip, true);
+	} else {
+		invadeScreen(url, tab1);
+	}
+}
+
 function invadeScreen(url, tab1) {
 
-  var ScreenInvaderIpOrUrl = localStorage["ip"] || "10.20.30.51";
-      checkUrl = "";
-      vidId = "";
+	var ScreenInvaderIpOrUrl = localStorage.ip || '10.20.30.44'
+	  , checkUrl = ''
+      , vidId = '';
 
   //make sure the ip is set if not set by the user using the options page
-  localStorage["ip"] = ScreenInvaderIpOrUrl;
+  localStorage.ip = ScreenInvaderIpOrUrl;
   
   chrome.tabs.getSelected(null, function(tab) {
-    var checkUrl = false;
+    var checkUrl = false
+	  , urlToLoad;
 
     tab = tab1 || tab;
     
@@ -37,103 +47,85 @@ function invadeScreen(url, tab1) {
     if (!checkUrl) {
       checkUrl = tab.url;
     }
-    
-    //disabled for now.
-    //~ if(isOnScreenInvader(checkUrl)) {
-      //~ 
-      //~ chrome.tabs.executeScript(null, {file: "playlists.js"});
-      //~ 
-      //~ return false;
-    //~ }
 
-    //stop youtube video
+	if (checkUrl.indexOf('youtu.be') != -1 ) {
+      checkUrl = 'https://youtube.com/watch?v=' + checkUrl.split('youtu.be/')[1];
+    }
+    //manipulate youtube video url
     if (checkUrl.indexOf('youtube') != -1 ) {
-      //~ chrome.tabs.executeScript(null,{file:"youtube.js"});
       
-      var vidArr = checkUrl.split("v=");
+      var vidArr = checkUrl.split('v=');
       
-      if (vidArr[1].indexOf("&") > -1) {
-        vidId = vidArr[1].split("&")[0]+'|youtube';
+      if (vidArr[1].indexOf('&') > -1) {
+        vidId = vidArr[1].split('&')[0] + '|youtube';
       } else {
         vidId = vidArr[1]+'|youtube';
       }
     }
-    if (checkUrl.indexOf('youtu.be') != -1 ) {
-      checkUrl = "https://youtube.com/watch?v="+checkUrl.split("e/")[1];
-    }
+
+    
 
     //stop vimeo video
-    if(checkUrl.indexOf('vimeo') != -1) {
-      chrome.tabs.executeScript(null,{file: "vimeo.js"});
+    if(checkUrl.indexOf('vimeo') != -1) {      
+      vidArr = checkUrl.split('/');
       
-      vidArr = checkUrl.split("/");
-      
-      vidId = vidArr[vidArr.length -1]+'|vimeo';
+      vidId = vidArr[vidArr.length -1] + '|vimeo';
     }
 
-    var urlToLoad = 'http://' + ScreenInvaderIpOrUrl + '/cgi-bin/show?' + checkUrl;
-    
-    //this requests the screenInvader to load a video or image
-    httpGet(urlToLoad);
-    
-    if (!isOnScreenInvader(checkUrl)) {
-           
-      chrome.windows.getCurrent(function(win) {
-        chrome.tabs.getAllInWindow(win.id, function(tabs) {
-          //will be set if a tab with the correct ip is opened.
-          var foundTab = false;
-          
-          for(var k in tabs) {
+	urlToLoad = 'http://' + ScreenInvaderIpOrUrl + '/cgi-bin/show?' + checkUrl;
+		
+	//this requests the screenInvader to load a video or image instantly
+	httpGet(urlToLoad);
 
-            if(tabs[k].url.indexOf(ScreenInvaderIpOrUrl) > -1) {
-              foundTab = tabs[k];
-              
-              if(makeTrueOrFalse(localStorage["switchToTabOnLoad"])) {
-                //switch to tab
-                chrome.tabs.update(foundTab.id, {selected: true});
-              }
-              break;
-            }
-          }
-          
-          //if there is no tab, create it
-          if ( !foundTab ) {
-            chrome.tabs.create({
-              url: 'http://' + ScreenInvaderIpOrUrl,
-              selected: makeTrueOrFalse(localStorage['switchToTabOnLoad'])
-            });
-          }
-          
-          //~ chrome.tabs.executeScript(null, {file: "addtohistory.js"});
-          
-        });
-      });  
+    if ( ! isOnScreenInvader(checkUrl) ) {
+		openOrSwitchTab(ScreenInvaderIpOrUrl, booleanize( localStorage.switchToTabOnLoad ) );
     }
   });
 }
 
-function makeTrueOrFalse(value) {
-  if (value && value !== "false") {
-    return true;  
-  }
-  return false;
+function openOrSwitchTab (ip, switchTo) {
+	chrome.windows.getCurrent(function(win) {
+		chrome.tabs.getAllInWindow(win.id, function(tabs) {
+			//will be set if a tab with the correct ip is opened.
+			var foundTab = false;
+			
+			for(var k in tabs) {
+				if ( tabs[k].url.indexOf(ip) > -1 ) {
+					foundTab = tabs[k];
+		  
+					if ( switchTo ) {
+						//switch to tab
+						chrome.tabs.update(foundTab.id, {selected: true});
+					}
+					break;
+				}
+			}
+	  
+			//if there is no tab, create it
+			if ( ! foundTab ) {
+				chrome.tabs.create({
+					url: 'http://' + ip,
+					selected: booleanize(localStorage.switchToTabOnLoad)
+				});
+			}
+		});
+	});  
+}
+
+function booleanize(value) {
+  return value && value !== 'false';
 }
 
 
 function isOnScreenInvader (url) {
-  if (url.indexOf(localStorage["ip"]) > -1 ) {
-    return true;
-  } else {
-    return false;
-  }
+  return url.indexOf(localStorage.ip) > -1 || url.indexOf(localStorage.slackomatic_ip) > -1;
 }
 
 //if the widget button gets clicked
-chrome.browserAction.onClicked.addListener(invadeScreen);
+chrome.browserAction.onClicked.addListener(slackOrInvade);
 
-chrome.contextMenus.create({"title": "Invade Screen", "contexts": ["all"], "onclick": function (info, tab) {
+chrome.contextMenus.create({title: 'Invade Screen', contexts: ['all'], onclick: function (info, tab) {
   var link = info.linkUrl || info.srcUrl || info.pageUrl;
 
   invadeScreen(link, tab);
-
 }});
