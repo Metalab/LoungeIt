@@ -14,7 +14,6 @@ function httpGet(url) {
 
 function slackOrInvade (url, tab1) {
 	if ( booleanize( localStorage.redirectToSlackomatic ) ) {
-		console.log('testing');
 		openOrSwitchTab(localStorage.slackomatic_ip, true);
 	} else {
 		invadeScreen(url, tab1);
@@ -78,7 +77,7 @@ function invadeScreen(url, tab1) {
 	httpGet(urlToLoad);
 
     if ( ! isOnScreenInvader(checkUrl) ) {
-		openOrSwitchTab(ScreenInvaderIpOrUrl, booleanize( localStorage.switchToTabOnLoad ) );
+		  openOrSwitchTab(ScreenInvaderIpOrUrl, booleanize( localStorage.switchToTabOnLoad ) );
     }
   });
 }
@@ -113,7 +112,10 @@ function openOrSwitchTab (ip, switchTo) {
 }
 
 function booleanize(value) {
-  return value && value !== 'false';
+  if ( value && value !== 'false' ) {
+    return value;
+  }
+  return false;
 }
 
 

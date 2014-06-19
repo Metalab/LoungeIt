@@ -1,4 +1,5 @@
 function check_ip (ip) {
+  console.log('check ip = ' + ip);
 	if ( ! ip ) { return false; }
 
 	ip = ip.replace('https://', '').replace('http://', '');
@@ -13,11 +14,11 @@ function check_ip (ip) {
 
 // Saves ScreenInvader options to localStorage. sanitizes input.
 function save_options() {
-	var ip = check_ip( document.getElementById('ip').innerHTML )
-	, slackomatic_ip = check_ip( document.getElementById('slackomatic_ip').innerHTML );
+	var ip = check_ip( document.getElementById('ip').value )
+	, slackomatic_ip = check_ip( document.getElementById('slackomatic_ip').value );
 
 	if ( ! booleanize( ip ) ) {
-		ip = '10.20.30.44';
+		ip = '10.20.30.40';
 	}
 
 	if ( ! booleanize( slackomatic_ip ) ) {
@@ -80,7 +81,10 @@ function restore_redirectToSlackomatic() {
 
 
 function booleanize(value) {
-  return value && value !== 'false';
+  if ( value && value != 'false' ) {
+    return value;
+  }
+  return false;
 }
 
 
